@@ -1,0 +1,219 @@
+{
+  "app_name": "NUTRIFLOW AI",
+  "personality": "1 iOS-Native Clean with 6 Glass / Luxe surfaces",
+  "personality_one_liner": "A serene, premium wellness space that combines iOS-native structural clarity with cinematic, glass-layered depth, creating a calm and highly focused $100M app experience.",
+  "color": {
+    "light": {
+      "surface": "#FAF9F6",
+      "onSurface": "#11181C",
+      "surfaceSecondary": "#FFFFFF",
+      "onSurfaceSecondary": "#3F4E4F",
+      "surfaceTertiary": "#F1F4F2",
+      "onSurfaceTertiary": "#687777",
+      "surfaceInverse": "#1A2121",
+      "onSurfaceInverse": "#FAF9F6",
+      "brand": "#4C7D64",
+      "brandPrimary": "#4C7D64",
+      "onBrandPrimary": "#FFFFFF",
+      "brandSecondary": "#D9E8E0",
+      "onBrandSecondary": "#2C4C3B",
+      "brandTertiary": "#EAF2EE",
+      "onBrandTertiary": "#375C48",
+      "success": "#3E7B62",
+      "onSuccess": "#FFFFFF",
+      "warning": "#B77729",
+      "onWarning": "#FFFFFF",
+      "error": "#A83C3C",
+      "onError": "#FFFFFF",
+      "info": "#4A6C82",
+      "onInfo": "#FFFFFF",
+      "border": "#E6E9E9",
+      "borderStrong": "#CCD3D3",
+      "divider": "#E6E9E9"
+    },
+    "dark": {
+      "surface": "#0F1412",
+      "onSurface": "#ECF2EF",
+      "surfaceSecondary": "#1A221F",
+      "onSurfaceSecondary": "#B1C2BB",
+      "surfaceTertiary": "#25312C",
+      "onSurfaceTertiary": "#8A9E96",
+      "surfaceInverse": "#FAF9F6",
+      "onSurfaceInverse": "#0F1412",
+      "brand": "#4C7D64",
+      "brandPrimary": "#63A484",
+      "onBrandPrimary": "#0F1412",
+      "brandSecondary": "#254133",
+      "onBrandSecondary": "#9AD5B7",
+      "brandTertiary": "#1A2C23",
+      "onBrandTertiary": "#81C0A0",
+      "success": "#4F9678",
+      "onSuccess": "#0F1412",
+      "warning": "#D4984F",
+      "onWarning": "#0F1412",
+      "error": "#C95A5A",
+      "onError": "#0F1412",
+      "info": "#6692AC",
+      "onInfo": "#0F1412",
+      "border": "#2A3631",
+      "borderStrong": "#3C4D46",
+      "divider": "#2A3631"
+    }
+  },
+  "typography": {
+    "displayFontFamily": "Plus Jakarta Sans",
+    "textFontFamily": "Plus Jakarta Sans",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24
+    }
+  },
+  "spacing": {
+    "rule": "Generous spacing. Cards use 'lg' padding. Single column cards span 100% width minus outer padding. Ensure safe-area clearances at roots.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 8,
+    "md": 16,
+    "lg": 24,
+    "pill": 999
+  },
+  "shadow_tier": "1",
+  "navigation": "bottom_tabs",
+  "icon_set": "Ionicons",
+  "glassmorphism": {
+    "enabled": true,
+    "do's": [
+      "Use frosted glass on sticky headers over scrolling content",
+      "Use glass bottom tab bar when content scrolls behind",
+      "Use frosted glass overlay on hero meal photo cards (Apple Fitness style)",
+      "Ensure translucent tinted base (≥70% opacity in light, ≥75% in dark) under text on glass for readability"
+    ],
+    "dont's": [
+      "Do not use glass on regular list rows or form fields",
+      "Do not stack more than 2 glass surfaces per screen",
+      "Do not make the entire screen blurred"
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Onboarding",
+      "purpose": "A chat-like conversational multi-step flow capturing user health data with a premium feel.",
+      "states": {
+        "loading": "Centered minimalist spinner with 'Preparing your personalized plan...' text.",
+        "empty": "N/A",
+        "error": "Failed to sync profile data. 'Retry' button in primary brand styling."
+      },
+      "layout": "Bottom-anchored chat input area (glassmorphism), with chat bubbles (OnboardingChatBubble) fading and sliding up from the bottom. Top area reserved for AI persona greeting. Smooth 60fps transitions between steps."
+    },
+    {
+      "name": "Dashboard",
+      "purpose": "Health Dashboard showing AI Body Analysis, macro rings (Apple Fitness style), charts, and streaks.",
+      "states": {
+        "loading": "Skeleton UI for macro rings and charts.",
+        "empty": "Illustration of a healthy lifestyle with CTA 'Start tracking today'.",
+        "error": "Unable to load dashboard data. 'Retry' CTA."
+      },
+      "layout": "Large hero section with Apple-style Animated Macro Rings (MacroRing). Below, scrollable cards for HabitTracker (water/steps/sleep). Use 'lg' spacing and 'lg' border radii. Floating cards for StatsCard with subtle shadows and clean typography."
+    },
+    {
+      "name": "Meal Plan",
+      "purpose": "7/14/30 days AI Meal Planner with beautiful photography, Smart Meal Replacement, and Shopping List.",
+      "states": {
+        "loading": "Skeleton layout mimicking WeekPlanCarousel and MealCard.",
+        "empty": "Icon of a plate with text 'No meal plan generated yet.' and 'Create Plan' CTA.",
+        "error": "Could not fetch meal plan. 'Retry' CTA."
+      },
+      "layout": "Top section: WeekPlanCarousel (horizontal scroll). Main section: Vertical list of MealCards. Each MealCard has a full-width hero photo with a gradient-to-dark scrim, placing macros and titles at the bottom. Include a floating 'Shopping List' glass button."
+    },
+    {
+      "name": "Scanner",
+      "purpose": "Camera-first Photo Food Scanner and manual add flow.",
+      "states": {
+        "loading": "Translucent overlay with AI scanning animation (60fps scale/opacity).",
+        "empty": "Camera viewfinder ready state.",
+        "error": "Failed to analyze food. 'Retake Photo' CTA."
+      },
+      "layout": "Full-screen camera view (PhotoScannerFrame). Bottom sheet (@gorhom/bottom-sheet) slides up with scan results, macros, and 'Add to Diary' primary CTA sticky at the bottom. Use transform/opacity animations for performance."
+    },
+    {
+      "name": "AI Chat",
+      "purpose": "Conversational AI Nutritionist chat and Blood Test PDF Upload.",
+      "states": {
+        "loading": "AI thinking indicator...",
+        "empty": "Suggested prompt chips (e.g., 'Analyze my blood test', 'What should I eat post-workout?').",
+        "error": "Network error. 'Reconnect' CTA."
+      },
+      "layout": "Chat interface with ChatBubbles. Include a BloodTestUploadCard at the top of the empty state or triggered via an attachment icon. Input field pinned to bottom with safe-area spacing."
+    },
+    {
+      "name": "Profile",
+      "purpose": "Manage Family Mode, Subscriptions (Free/Pro/Family), and app settings.",
+      "states": {
+        "loading": "Spinner loading profile data.",
+        "empty": "N/A",
+        "error": "Could not load profile. 'Retry' CTA."
+      },
+      "layout": "Header with avatar and name. Vertical list of settings rows. A prominent SubscriptionPlanCard with glassmorphism to highlight 'Pro' or 'Family' upgrade, showcasing features. Family Mode toggle opens a bottom sheet to switch profiles."
+    }
+  ],
+  "images": {
+    "hero_meal_1": {
+      "url": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHwxfHxoZWFsdGh5JTIwb3JnYW5pYyUyMHNhbGFkJTIwYm93bCUyMGhpZ2glMjBxdWFsaXR5fGVufDB8fHx8MTc4NTMyNDI3Nnww&ixlib=rb-4.1.0&q=85",
+      "alt": "bowl of vegetable salads"
+    },
+    "hero_meal_2": {
+      "url": "https://images.unsplash.com/photo-1603046891726-36bfd957e0bf?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwxfHxhdm9jYWRvJTIwdG9hc3QlMjBwcmVtaXVtJTIwcGhvdG9ncmFwaHl8ZW58MHx8fHwxNzg1MzI0Mjc2fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "avocado toast premium photography"
+    },
+    "avatar_user": {
+      "url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMGNhbG0lMjBwZXJzb258ZW58MHx8fHwxNzg1MzI0Mjc2fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "professional headshot calm person"
+    },
+    "blood_test_bg": {
+      "url": "https://images.unsplash.com/photo-1639772823849-6efbd173043c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwYmxvb2QlMjB0ZXN0JTIwcmVwb3J0JTIwYWJzdHJhY3R8ZW58MHx8fHwxNzg1MzI0Mjc3fDA&ixlib=rb-4.1.0&q=85",
+      "alt": "medical blood test report abstract"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Implement the '1 iOS-Native Clean with 6 Glass / Luxe surfaces' personality. The UI must feel like a $100M startup: premium, minimal, calm.",
+    "Follow the exact color tokens provided. Do NOT use default Material indigo or blue. The primary brand color is a sage/emerald green (#4C7D64).",
+    "Typography must be restricted to font weights 400 and 500 ONLY. Use size and color contrast for hierarchy, not heavy weights.",
+    "Ensure safe area is respected at every screen root. Content never sits under the notch.",
+    "Implement Apple Fitness-style animated macro rings on the Dashboard. Make sure to use Reanimated for 60fps performance.",
+    "For the Scanner screen, use a camera-first layout with a `@gorhom/bottom-sheet` for results, ensuring transitions rely on transform and opacity.",
+    "Apply gradient-to-dark scrims (top to bottom, transparent -> 70%+ surfaceInverse) on all MealCard hero photos so text remains perfectly legible.",
+    "Onboarding should be a smooth conversational chat interface, replacing standard web-like forms.",
+    "Include a BloodTestUploadCard that looks premium (use glassmorphism and the blood_test_bg image with a heavy tint).",
+    "Ensure the SubscriptionPlanCard uses premium spacing, border radii (lg/24px), and glassmorphism to look luxurious.",
+    "Handle Dark Mode and Light Mode natively utilizing the provided tokens."
+  ],
+  "haptics": {
+    "tab_press": "selection",
+    "primary_button_press": "impactLight",
+    "meal_logged": "notificationSuccess",
+    "macro_ring_complete": "notificationSuccess",
+    "food_scan_success": "impactMedium"
+  }
+}
