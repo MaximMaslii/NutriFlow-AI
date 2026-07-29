@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="22" time="2.000" timestamp="2026-07-29T11:45:50.389917+00:00" hostname="agent-env-18e8e005-281c-437b-aae6-8e57cec2774b"><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_01_health" time="0.004" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_02_register_new_user" time="0.104" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_03_login_demo" time="0.109" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_04_auth_me" time="0.152" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_05_auth_me_unauthenticated" time="0.042" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_06_logout" time="0.043" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_07_get_profile" time="0.043" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_08_put_profile" time="0.088" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_09_analysis_body" time="0.043" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_10_meals_generate" time="0.225"><failure message="AssertionError: 502 {&quot;detail&quot;:&quot;AI meal plan generation failed: Failed to start streaming completion: litellm.BadRequestError: OpenAIException - Budget has been exceeded! Current cost: 1.40525925, Max budget: 1.4&quot;}&#10;assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">tests/test_nutriflow_e2e.py:128: in test_10_meals_generate
+    assert r.status_code == 200, f"{r.status_code} {r.text[:500]}"
+E   AssertionError: 502 {"detail":"AI meal plan generation failed: Failed to start streaming completion: litellm.BadRequestError: OpenAIException - Budget has been exceeded! Current cost: 1.40525925, Max budget: 1.4"}
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_11_meals_plans_list" time="0.044"><failure message="AssertionError: no plans returned&#10;assert []">tests/test_nutriflow_e2e.py:148: in test_11_meals_plans_list
+    assert plans, "no plans returned"
+E   AssertionError: no plans returned
+E   assert []</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_12_meals_plan_by_id" time="0.000"><failure message="KeyError: 'plan_id'">tests/test_nutriflow_e2e.py:152: in test_12_meals_plan_by_id
+    pid = shared["plan_id"]
+          ^^^^^^^^^^^^^^^^^
+E   KeyError: 'plan_id'</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_13_meal_replace" time="0.000"><failure message="KeyError: 'meal_id'">tests/test_nutriflow_e2e.py:161: in test_13_meal_replace
+    mid = shared["meal_id"]
+          ^^^^^^^^^^^^^^^^^
+E   KeyError: 'meal_id'</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_14_shopping_list" time="0.000"><failure message="KeyError: 'plan_id'">tests/test_nutriflow_e2e.py:176: in test_14_shopping_list
+    pid = shared["plan_id"]
+          ^^^^^^^^^^^^^^^^^
+E   KeyError: 'plan_id'</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_15_scan_food" time="0.146"><failure message="AssertionError: 500 Internal Server Error&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500]&gt;.status_code">tests/test_nutriflow_e2e.py:195: in test_15_scan_food
+    assert r.status_code == 200, f"{r.status_code} {r.text[:500]}"
+E   AssertionError: 500 Internal Server Error
+E   assert 500 == 200
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_16_blood_test_analyze" time="0.129"><failure message="AssertionError: 500 Internal Server Error&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500]&gt;.status_code">tests/test_nutriflow_e2e.py:208: in test_16_blood_test_analyze
+    assert r.status_code == 200, f"{r.status_code} {r.text[:500]}"
+E   AssertionError: 500 Internal Server Error
+E   assert 500 == 200
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_17_chat_send_and_context" time="0.042"><failure message="AssertionError: 500 Internal Server Error&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500]&gt;.status_code">tests/test_nutriflow_e2e.py:218: in test_17_chat_send_and_context
+    assert r.status_code == 200, f"{r.status_code} {r.text[:500]}"
+E   AssertionError: 500 Internal Server Error
+E   assert 500 == 200
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_18_chat_history" time="0.000"><failure message="KeyError: 'chat_sid'">tests/test_nutriflow_e2e.py:234: in test_18_chat_history
+    headers=auth_headers, params={"session_id": shared["chat_sid"]},
+                                                ^^^^^^^^^^^^^^^^^^
+E   KeyError: 'chat_sid'</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_19_recipe_generate" time="0.035"><failure message="AssertionError: 500 Internal Server Error&#10;assert 500 == 200&#10; +  where 500 = &lt;Response [500]&gt;.status_code">tests/test_nutriflow_e2e.py:248: in test_19_recipe_generate
+    assert r.status_code == 200, f"{r.status_code} {r.text[:500]}"
+E   AssertionError: 500 Internal Server Error
+E   assert 500 == 200
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_20_habits_log_and_get" time="0.047" /><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_21_stripe_checkout" time="0.221"><failure message="AssertionError: 502 {&quot;detail&quot;:&quot;Stripe error: Invalid API Key provided: sk_test_****gent&quot;}&#10;assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">tests/test_nutriflow_e2e.py:272: in test_21_stripe_checkout
+    assert r.status_code == 200, f"{r.status_code} {r.text[:500]}"
+E   AssertionError: 502 {"detail":"Stripe error: Invalid API Key provided: sk_test_****gent"}
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="tests.test_nutriflow_e2e.TestNutriflowE2E" name="test_22_subscription_default" time="0.044" /></testsuite></testsuites>

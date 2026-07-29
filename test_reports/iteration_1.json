@@ -1,0 +1,49 @@
+{
+  "summary": "NutriFlow AI backend e2e tested via pytest (22 tests). 11/22 passed. Every non-AI endpoint works correctly (health, auth flows, /auth/me, /auth/logout, /profile GET+PUT, /analysis/body, /habits, /subscription). Every AI-powered endpoint FAILS because EMERGENT_LLM_KEY has exhausted its budget ('Budget has been exceeded! Current cost: 1.40525925, Max budget: 1.4'). Stripe checkout also fails because STRIPE_API_KEY value in /app/backend/.env is the literal placeholder string 'sk_test_emergent' which Stripe rejects as invalid. These are infra/config issues, not code bugs — but the AI endpoint code should ALSO be hardened to return 502 with a helpful message instead of leaking raw 500s. No frontend testing performed (only backend requested).",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "EMERGENT_LLM_KEY infrastructure", "issue": "Emergent LLM budget exhausted (1.40525925/1.4). All AI endpoints fail: /api/meals/generate, /api/meals/{id}/replace, /api/scan/food, /api/blood-test/analyze, /api/chat/send, /api/recipes/generate. Backend log: 'litellm.BadRequestError: OpenAIException - Budget has been exceeded! Current cost: 1.40525925, Max budget: 1.4'. Requires new/topped-up EMERGENT_LLM_KEY. Cannot be fixed in code.", "priority": "CRITICAL"},
+      {"endpoint": "POST /api/stripe/checkout", "issue": "Returns 502 'Invalid API Key provided: sk_test_****gent'. STRIPE_API_KEY in /app/backend/.env is set to placeholder 'sk_test_emergent' which is not a real Stripe key. Main agent must inject the real Emergent-managed Stripe test key. Cannot generate checkout_url until fixed.", "priority": "CRITICAL"},
+      {"endpoint": "POST /api/scan/food, /api/chat/send, /api/blood-test/analyze, /api/recipes/generate", "issue": "These endpoints do NOT wrap the LlmChat.stream_message / llm_json call in try/except. When EMERGENT_LLM_KEY fails (budget/network/etc), the raw ChatError bubbles up as HTTP 500 with 'Internal Server Error' body — client gets no useful message. Compare to /api/meals/generate which properly returns 502 with detail. Wrap the LLM streaming loops in try/except Exception and raise HTTPException(502, f'AI ...: {e}').", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "GET /api/subscription", "issue": "Default response is {'plan':'free','status':'active'} — no user_id/updated_at fields. Matches spec but consider adding user_id for consistency."},
+      {"endpoint": "POST /api/auth/logout", "issue": "For JWT users the endpoint is a no-op (only removes google session_token from db.user_sessions). JWT is never revoked — logout is client-side only. Acceptable for MVP but document it."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/conftest.py",
+    "/app/backend/tests/test_nutriflow_e2e.py",
+    "/app/test_reports/pytest/nutriflow_e2e.xml"
+  ],
+  "action_items": [
+    "URGENT: Refresh/increase the EMERGENT_LLM_KEY budget — current key is at hard limit (1.4/1.4 USD) causing all AI endpoints to fail.",
+    "URGENT: Replace STRIPE_API_KEY=sk_test_emergent placeholder in /app/backend/.env with a valid Emergent-managed Stripe test secret key. Currently Stripe rejects it as invalid.",
+    "Wrap LLM stream loops in try/except in /api/scan/food (line ~724), /api/chat/send (line ~890), /api/blood-test/analyze (line ~805), and /api/recipes/generate (line ~947). Raise HTTPException(502, ...) on failure so clients get actionable errors instead of raw 500s.",
+    "After fixing keys, re-run: pytest /app/backend/tests/test_nutriflow_e2e.py -v"
+  ],
+  "critical_code_review_comments": [
+    "server.py is 1112 lines — should be split into modules (auth, profile, meals, scan, blood_test, chat, recipes, habits, stripe).",
+    "MongoDB _id is correctly excluded via {'_id': 0} projections everywhere — good.",
+    "Environment vars used correctly (MONGO_URL, DB_NAME, EMERGENT_LLM_KEY, STRIPE_API_KEY, JWT_SECRET). No hardcoded values.",
+    "AI endpoints lack try/except around stream loops (see action items). Only /meals/generate handles LLM errors gracefully.",
+    "Password hashing uses PBKDF2-SHA256 200k iterations — acceptable, but consider bcrypt/argon2 for production.",
+    "JWT logout is client-side only; no server-side token blacklist. Fine for MVP."
+  ],
+  "updated_files": [
+    "/app/backend/tests/conftest.py (new)",
+    "/app/backend/tests/test_nutriflow_e2e.py (new)"
+  ],
+  "success_rate": {"backend": "50% (11/22 tests pass; all failures caused by exhausted EMERGENT_LLM_KEY budget and invalid STRIPE_API_KEY placeholder)", "frontend": "not tested"},
+  "seed_data_creation": "No persistent seed data created. Test 02 creates a throwaway TEST_reg_<uuid>@nutriflow.ai user per run (not cleaned up but harmless).",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Once EMERGENT_LLM_KEY budget is refreshed AND STRIPE_API_KEY is replaced with a real emergent-managed test key, run `cd /app/backend && pytest tests/test_nutriflow_e2e.py -v` — all 22 tests should pass. The 11 non-AI tests already pass reliably. AI tests have long timeouts (60–180s) so allow time. Note pytest.ini forces -n 2 --dist loadscope; a single test class runs on one worker deterministically.",
+  "rca_of_issue": "Two independent root causes: (1) EMERGENT_LLM_KEY (sk-emergent-891DcAb800f93AaFd3) hit its LiteLLM budget cap of $1.40 — verified in /var/log/supervisor/backend.err.log with 'litellm.BadRequestError: OpenAIException - Budget has been exceeded! Current cost: 1.40525925, Max budget: 1.4'. Every endpoint calling LlmChat (meals/generate, meals/replace, scan/food, blood-test/analyze, chat/send, recipes/generate) is affected. (2) STRIPE_API_KEY is set to the literal string 'sk_test_emergent' — that is a placeholder, not a valid Stripe test key. Stripe SDK rejects it with 'Invalid API Key provided: sk_test_****gent'. Mitigation: main agent must refresh both credentials via Emergent platform. Additionally, harden AI endpoints to return 502 instead of 500 on LLM failure so users see actionable errors."
+}
