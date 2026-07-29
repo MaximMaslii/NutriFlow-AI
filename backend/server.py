@@ -43,6 +43,9 @@ LLM_MODEL_PROVIDER = "openai"
 LLM_MODEL_NAME = "gpt-5.2"
 
 stripe.api_key = STRIPE_API_KEY
+# Route through Emergent-managed Stripe proxy when using placeholder test key
+if STRIPE_API_KEY and "sk_test_emergent" in STRIPE_API_KEY:
+    stripe.api_base = "https://integrations.emergentagent.com/stripe"
 
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
@@ -721,12 +724,15 @@ Respond in {lang}. If multiple items, list the main dish."""
     if "," in b64:
         b64 = b64.split(",", 1)[1]
 
-    out_parts: list[str] = []
-    async for ev in chat.stream_message(UserMessage(text=prompt, file_contents=[ImageContent(image_base64=b64)])):
-        if isinstance(ev, TextDelta):
-            out_parts.append(ev.content)
-        elif isinstance(ev, StreamDone):
-            break
+    try:
+        out_parts: list[str] = []
+        async for ev in chat.stream_message(UserMessage(text=prompt, file_contents=[ImageContent(image_base64=b64)])):
+            if isinstance(ev, TextDelta):
+                out_parts.append(ev.content)
+            elif isinstance(ev, StreamDone):
+                break
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"AI vision analysis failed: {e}")
     text = _strip_json_fences("".join(out_parts))
     try:
         result = json.loads(text)
@@ -802,12 +808,15 @@ Respond in {lang}.
         system_message=system,
     ).with_model(LLM_MODEL_PROVIDER, LLM_MODEL_NAME)
     msg = UserMessage(text=user_txt, file_contents=[ImageContent(image_base64=image_b64)] if image_b64 else None)
-    out_parts: list[str] = []
-    async for ev in chat.stream_message(msg):
-        if isinstance(ev, TextDelta):
-            out_parts.append(ev.content)
-        elif isinstance(ev, StreamDone):
-            break
+    try:
+        out_parts: list[str] = []
+        async for ev in chat.stream_message(msg):
+            if isinstance(ev, TextDelta):
+                out_parts.append(ev.content)
+            elif isinstance(ev, StreamDone):
+                break
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"AI blood test analysis failed: {e}")
     txt = _strip_json_fences("".join(out_parts))
     try:
         result = json.loads(txt)
@@ -886,12 +895,15 @@ async def chat_send(req: ChatSendRequest, authorization: Optional[str] = Header(
         file_contents = [ImageContent(image_base64=b64)]
 
     # simple send-message approach for non-streaming — accumulate stream
-    out_parts: list[str] = []
-    async for ev in chat.stream_message(UserMessage(text=req.message, file_contents=file_contents)):
-        if isinstance(ev, TextDelta):
-            out_parts.append(ev.content)
-        elif isinstance(ev, StreamDone):
-            break
+    try:
+        out_parts: list[str] = []
+        async for ev in chat.stream_message(UserMessage(text=req.message, file_contents=file_contents)):
+            if isinstance(ev, TextDelta):
+                out_parts.append(ev.content)
+            elif isinstance(ev, StreamDone):
+                break
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"AI chat failed: {e}")
     reply = "".join(out_parts).strip()
 
     await db.chat_messages.insert_one({
